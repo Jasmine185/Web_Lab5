@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    
+</head>
+<body>
+    <!--ex01-->
+    <h1>Exercise 1</h1>
+    <canvas id="smileyCanvas" width="400" height="400" style="border: 1px solid;"></canvas>
+    <script>
+        //get the canvas element and its drawing context
+        var canvas=document.getElementById('smileyCanvas');
+        var ctx=canvas.getContext('2d');
+        ctx.fillStyle='lightgreen';
+        ctx.fillRect(0,0,canvas.width,canvas.height);
+
+
+        //function to draw a siley face
+        function drawSmiley(){
+            //face
+            ctx.beginPath();
+            ctx.arc(200,200,100,0,Math.PI*2,true);
+            ctx.fillStyle='yellow';
+            ctx.fill();
+            ctx.stroke();
+    
+            //eyes
+            ctx.beginPath();
+            ctx.arc(170, 180, 10, 0, Math.PI * 2, true);  // Left eye
+            ctx.fillStyle='black';
+            ctx.fill();
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.arc(230, 180, 10, 0, Math.PI * 2, true);  // Right eye
+            ctx.fillStyle='black';
+            ctx.fill();
+            ctx.stroke();
+
+            //nose
+            ctx.beginPath();
+            ctx.moveTo(200,205);
+            ctx.lineTo(200,235);
+            ctx.stroke();
+
+
+            //mouth
+            ctx.beginPath();
+            ctx.arc(200, 230, 50, 0, Math.PI, false);  // Mouth
+            ctx.stroke();
+
+            //text
+            ctx.font='30px Arial';
+            ctx.fillText('The canvas brought me to life !',0,350);
+
+        }
+        drawSmiley();
+    </script>
+    <hr>
+
+    <!--ex02-->
+    <h1>Exercise 2</h1>
+    <button onclick="getGeolocation()">Get Geolocation</button>
+    <p id="geolocation"></p>
+    <script>
+        let x=document.getElementById("geolocation");
+        function getGeolocation(){
+            if(navigator.geolocation){
+                navigator.geolocation.getCurrentPosition(showGeolocation);
+            }else{
+                x.innerHTML="Geolocation is not supported by this browser.";
+            }
+        }
+
+        function showGeolocation(position){
+            x.innerHTML="Latitude: "+position.coords.latitude+"<br>Logitude: "+position.coords.longitude;
+        }
+    </script>
+    <br></br>
+    <br></br>
+    <hr>
+
+    <!--ex03-->
+    <h1>Exercise 3</h1>
+    <h2>To Do List</h2>
+    <input type="text" id="newTask" placeholder="Enter the task">
+    <button onclick="addTask()" id="addTask">Add Task</button>
+
+    <ul id="list"></ul>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load tasks from local storage
+            loadTasks();
+    
+            // Add task event listener
+            document.getElementById('addTask').addEventListener('click', addTask);
+    
+            // Function to add tasks
+            function addTask() {
+                var taskInput = document.getElementById('newTask');
+                var task = taskInput.value.trim();
+    
+                if (task) {
+                    var li = document.createElement('li');
+                    li.textContent = task;
+    
+                    var deleteBtn = document.createElement('button');
+                    deleteBtn.textContent = 'delete';
+                    deleteBtn.onclick = function() {
+                        deleteTask(li, task);
+                    };
+                    li.appendChild(deleteBtn);
+    
+                    document.getElementById('list').appendChild(li);
+    
+                    saveTask(task);
+    
+                    taskInput.value = '';
+                }
+            }
+    
+            // Function to delete tasks
+            function deleteTask(taskItem, task) {
+                taskItem.remove();
+                removeTaskFromLocalStorage(task);
+            }
+    
+            // Function to save tasks to local storage
+            function saveTask(task) {
+                var tasks = getTasksFromLocalStorage();
+                tasks.push(task);
+                localStorage.setItem('tasks', JSON.stringify(tasks));
+            }
+    
+            // Function to remove tasks from local storage
+            function removeTaskFromLocalStorage(task) {
+                var tasks = getTasksFromLocalStorage();
+                tasks = tasks.filter(function(t) {
+                    return t !== task;
+                });
+                localStorage.setItem('tasks', JSON.stringify(tasks));
+            }
+    
+            // Function to load tasks from local storage
+            function loadTasks() {
+                var tasks = getTasksFromLocalStorage();
+                tasks.forEach(function(task) {
+                    var li = document.createElement('li');
+                    li.textContent = task;
+    
+                    var deleteBtn = document.createElement('button');
+                    deleteBtn.textContent = 'delete';
+                    deleteBtn.onclick = function() {
+                        deleteTask(li, task);
+                    };
+                    li.appendChild(deleteBtn);
+    
+                    document.getElementById('list').appendChild(li);
+                });
+            }
+    
+            // Function to get tasks from local storage
+            function getTasksFromLocalStorage() {
+                var tasks;
+                var tasksData = localStorage.getItem('tasks');
+                if (tasksData) {
+                    tasks = JSON.parse(tasksData);
+                } else {
+                    tasks = [];
+                }
+                return tasks;
+            }
+        });
+    </script>
+
+
+</body>
+</html>
